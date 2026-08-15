@@ -1,0 +1,741 @@
+/* ============================================
+   TZ Gaming - Global Styles
+   ============================================ */
+
+/* ---- Self-hosted fonts ----
+   Anton (used for --font-display, e.g. the homepage's animated stat
+   counters) and "Inter" Bold (used for various numeric/stat labels across
+   the site — MB step numbers, live fan counts, slot RTP stats, etc.) are
+   both bundled below as self-hosted woff2, using the exact font files
+   supplied by the client.
+
+   "MStiffHeiHK" (蒙納超剛黑 / Monotype Stiff Hei HK, used for --font-hero,
+   i.e. every page's main headings) is a licensed commercial font supplied
+   by the client — bundled below as self-hosted woff2 (compressed, loads
+   first) with an .otf fallback for browsers that don't support woff2. */
+@font-face {
+  font-family: "Anton";
+  src: url("../fonts/Anton-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("../fonts/Inter-Bold.woff2") format("woff2"),
+       url("../fonts/Inter-Bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("../fonts/Inter-Black.woff2") format("woff2");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "MStiffHeiHK";
+  src: url("../fonts/MStiffHeiHK.woff2") format("woff2"),
+       url("../fonts/MStiffHeiHK.otf") format("opentype");
+  font-weight: 400 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ---- Reset ---- */
+*, *::before, *::after { box-sizing: border-box; }
+html, body, h1, h2, h3, h4, p, ul, ol, li, figure { margin: 0; padding: 0; }
+ul, ol { list-style: none; }
+a { text-decoration: none; color: inherit; }
+img { max-width: 100%; display: block; }
+button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+input, textarea, select { font: inherit; }
+
+/* ---- Design Tokens ---- */
+:root {
+  /* Colors */
+  --color-white: #FFFFFF;
+  --color-brand: #6990D9;          /* 品牌亮色 */
+  --color-brand-dark: #475B97;     /* 漸層深色端 */
+  --color-navy: #3F507E;           /* 品牌主色-III */
+  --color-gray-light: #E3E3E3;     /* 淺深灰 */
+  --color-gray-bg: #F2F2F2;        /* 灰白色 */
+  --color-black: #0C0C0C;
+
+  --gradient-brand: linear-gradient(180deg, var(--color-brand) 0%, var(--color-brand-dark) 100%);
+
+  /* Typography */
+  --font-base: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  --font-display: "Anton", var(--font-base);
+  --font-hero: "MStiffHeiHK", var(--font-base);
+
+  /* Layout */
+  --content-max: 1440px;
+  --header-height: 96px;
+  --radius: 16px;
+
+  /* Button */
+  --btn-w: 200px;
+  --btn-h: 56px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-base);
+  color: var(--color-black);
+  background: var(--color-white);
+  line-height: 1.5;
+  padding-top: var(--header-height);
+  -webkit-font-smoothing: antialiased;
+}
+
+.container {
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: 0 56px;
+}
+
+section {
+  width: 100%;
+}
+
+/* Wrap a section's inner content so it never exceeds 1440px,
+   while the section element itself can keep a full-bleed background. */
+.content-1440 {
+  max-width: var(--content-max);
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 56px;
+  box-sizing: border-box;
+}
+
+/* ---- Hero Carousel (shared across all pages) ---- */
+.hero {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.hero-track {
+  display: flex;
+  transition: transform .6s cubic-bezier(.65,0,.35,1);
+}
+
+.hero-slide {
+  flex: 0 0 100%;
+  min-width: 100%;
+  height: clamp(320px, 32.22vw, 464px);   /* 464/1440 = 32.22% — scales proportionally with viewport */
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;   /* centres .hero-slide-content within the full-bleed slide */
+  background: #F2F2F2;   /* shows on screens wider than 1440px, either side of the capped background image */
+  overflow: hidden;
+}
+
+/* The background image itself is capped at the page's 1440px design width
+   and centred — it does NOT go full-bleed on ultra-wide screens, unlike the
+   text content wrapper which was already capped this way.
+
+   Desktop/mobile art is split into two child divs (.hero-slide-bg-img),
+   each with its own directly-written inline background-image, toggled by
+   the media query below — rather than one div switching image via a
+   --bg-desktop/--bg-mobile CSS custom property. That indirection used to
+   cause two separate bugs: (1) a rule on the wrong element meant the
+   mobile image never actually applied, and (2) a relative url() inside a
+   custom property resolves against the *stylesheet's* location when the
+   var() consuming it lives in an external CSS file — not the HTML page's
+   location — which silently breaks relative paths, and using absolute
+   "/images/..." paths to dodge that then breaks entirely when the page is
+   opened straight from disk (file://) instead of a web server, since a
+   leading "/" resolves to the filesystem root. Writing the url() directly
+   in each element's own inline style avoids all of that: it always
+   resolves relative to the HTML document, in every context. */
+.hero-slide-bg {
+  position: absolute;
+  inset: 0;
+  left: 50%;
+  width: 100%;
+  max-width: var(--content-max);
+  transform: translateX(-50%);
+  overflow: hidden;
+}
+.hero-slide-bg-img {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+}
+.hero-slide-bg-img.is-mobile { display: none; }
+
+
+/* Caps the text/button block at the page's 1440px design width, same as
+   every other section — so on screens wider than 1440px the 160px inset
+   is measured from that logical 1440 edge, not the raw browser edge. */
+.hero-slide-content {
+  position: relative;
+  z-index: 1;   /* sits above .hero-slide-bg */
+  width: 100%;
+  max-width: var(--content-max);
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;   /* content block sits left, after the inset — NOT centred across the full banner width (per Figma desktop) */
+  padding: 10px clamp(16px, 11.11vw, 160px);   /* 160/1440 = 11.11% */
+}
+
+.hero-slide-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  text-align: center;   /* centres the two heading lines relative to each other only, since they differ in length */
+}
+
+.hero-slide h1 {
+  font-family: var(--font-hero);
+  font-weight: 800;
+  font-size: 56px;   /* fixed — no longer scales fluidly with the viewport */
+  line-height: 72px;
+  color: var(--color-white);
+  text-shadow: 0 0 16px rgba(0, 111, 255, 0.85);
+  white-space: nowrap;
+}
+
+.hero-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 24px 0;
+}
+
+.hero-dots button {
+  width: 12px;
+  height: 12px;
+  border-radius: 40px;
+  background: var(--color-gray-light);
+  transition: width .3s ease, background .3s ease;
+}
+
+.hero-dots button.is-active {
+  width: 48px;
+  background: var(--color-brand);
+}
+
+/* ---- CTA Banner (shared across all pages) ---- */
+.cta-banner {
+  position: relative;
+  background: var(--color-navy);
+  background-size: cover;
+  background-position: center;
+  min-height: 200px;
+  padding: 16px 0;
+}
+
+.cta-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  min-height: 168px;
+}
+
+.cta-content { display: flex; align-items: center; gap: 32px; flex-wrap: wrap; }
+.cta-media { width: 209px; height: 200px; flex-shrink: 0; }
+.cta-media img { width: 100%; height: 100%; object-fit: contain; }
+.cta-text {
+  font-family: var(--font-hero);
+  font-weight: 800;
+  font-size: 32px;
+  line-height: 40px;
+  color: var(--color-white);
+}
+
+.section-title-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.section-title {
+  font-family: var(--font-hero);
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 38px;
+  text-align: center;
+  color: var(--color-navy);
+}
+
+.section-title-bar {
+  width: 96px;
+  height: 4px;
+  background: var(--color-navy);
+  border-radius: 16px;
+}
+
+/* ---- Buttons ---- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--btn-w);
+  height: var(--btn-h);
+  max-width: 100%;
+  padding: 8px;
+  border-radius: var(--radius);
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 20px;
+  text-align: center;
+  white-space: nowrap;
+  border: 1px solid var(--color-brand);
+  transition: transform .2s ease, box-shadow .25s ease,
+              background .25s ease, background-color .25s ease, color .25s ease;
+}
+
+/* ---- Primary CTA button — states mirror Figma Frame 378 ----
+   Idle (default) : gradient fill + white text, glow continuously PULSES
+                     between soft (5px) and strong (15px) — "總是閃爍藍光暈"
+   Hover / Active  : inverts to white fill + navy text, holds at the
+                     STRONGEST glow (15px), pulse stops — "反白且保持最藍光暈"
+------------------------------------------------------------------ */
+@keyframes btn-glow-pulse {
+  0%, 100% { box-shadow: 0 0 5px rgba(0, 140, 255, 0.75); }
+  50% { box-shadow: 0 0 15px #008cff; }
+}
+
+.btn-primary {
+  background: var(--gradient-brand);
+  color: var(--color-white);
+  box-shadow: 0 0 5px rgba(0, 140, 255, 0.75);
+  animation: btn-glow-pulse 1.8s ease-in-out infinite;
+}
+
+.btn-primary:hover,
+.btn-primary:focus-visible,
+.btn-primary:active {
+  background: var(--color-white);
+  color: var(--color-navy);
+  box-shadow: 0 0 15px #008cff;
+  animation: none;   /* hold steady at the strongest glow instead of pulsing */
+}
+
+.btn-solid {
+  background: var(--color-brand);
+  color: var(--color-white);
+}
+
+.btn-solid:hover,
+.btn-solid:focus-visible {
+  box-shadow: 0 0 15px #008cff;
+  transform: translateY(-2px);
+}
+
+.btn-solid:active {
+  background: var(--color-white);
+  color: var(--color-navy);
+  box-shadow: 0 0 15px #008cff;
+  transform: translateY(0) scale(0.97);
+}
+
+/* ---- Header ---- */
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  height: var(--header-height);
+  background: var(--color-navy);
+  box-shadow: 0 8px 4px rgba(0, 7, 25, 0.3);
+}
+
+/* Navbar content is capped at 1440px, same as the rest of the page —
+   the header bar's background can still be full-bleed via .site-header itself. */
+.site-header .container {
+  max-width: var(--content-max);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.site-logo { flex-shrink: 0; }
+.site-logo img {
+  height: 68px;
+  width: auto;
+}
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.nav-list {
+  display: flex;
+  align-items: center;
+}
+
+/* Mobile-only "官方首頁" link inside the drawer — hidden on the desktop
+   horizontal nav, since clicking the logo already serves that purpose
+   there; shown only once .site-nav becomes an off-canvas drawer (see the
+   1024px media query below). */
+.nav-home-mobile { display: none; }
+
+.nav-list a {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  font-size: 16px;
+  color: var(--color-white);
+  text-align: center;
+  white-space: nowrap;
+  transition: color .2s ease;
+}
+
+.nav-list a:hover,
+.nav-list a.is-active { color: var(--color-brand); }
+
+.nav-list a.is-active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 32px;
+  height: 2px;
+  background: var(--color-brand);
+}
+
+.nav-toggle {
+  display: none;
+  width: 40px;
+  height: 40px;
+  background: var(--color-brand);
+  border-radius: 4px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.nav-toggle span {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  height: 2px;
+  background: var(--color-white);
+  transition: transform .25s ease, top .25s ease;
+}
+.nav-toggle span:nth-child(1) { top: 14px; }
+.nav-toggle span:nth-child(2) { top: 24px; }
+
+.nav-toggle.is-open span:nth-child(1) { top: 19px; transform: rotate(45deg); }
+.nav-toggle.is-open span:nth-child(2) { top: 19px; transform: rotate(-45deg); }
+
+/* ---- Footer ---- */
+.site-footer {
+  background: var(--color-navy);
+  color: var(--color-white);
+}
+
+.footer-partners {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 48px;
+  padding: 48px 0;
+}
+.footer-partners img { height: 60px; width: auto; object-fit: contain; }
+
+.footer-nav {
+  border-top: 1px solid var(--color-white);
+  width: 100%;
+}
+
+.footer-nav-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px 0;
+}
+
+.footer-nav-list a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 116px;
+  height: 40px;
+  padding: 8px;
+  font-size: 16px;
+  color: var(--color-white);
+}
+.footer-nav-list a:hover { color: var(--color-brand); }
+
+.footer-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 0;
+  min-height: 96px;
+}
+
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+.footer-brand img { width: 108px; height: 64px; object-fit: contain; }
+.footer-copy { font-size: 16px; color: var(--color-white); white-space: nowrap; }
+
+.footer-social {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.footer-social a {
+  display: block;
+  width: 30px;
+  height: 30px;
+  color: var(--color-white);   /* default icon colour — SVGs use fill:currentColor */
+  transition: color .3s ease;
+}
+.footer-social svg { display: block; width: 100%; height: 100%; }
+.footer-social a:hover,
+.footer-social a:active,
+.footer-social a:focus-visible { color: var(--color-brand); }   /* ref: Figma Facebook/Instagram/TikTok Property 1=Variant2 — white icon turns brand blue #6990D9 */
+
+/* ---- Why choose us (shared across pages) ---- */
+.why-section { padding: 60px 0 40px; display: flex; flex-direction: column; align-items: center; gap: 32px; }
+
+.why-grid {
+  display: flex;
+  gap: 48px;
+  background: var(--color-gray-bg);
+  border-radius: var(--radius);
+  padding: 32px 48px;
+  width: 100%;
+}
+
+.why-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  min-width: 0;
+}
+
+.why-item img { width: 80px; height: 80px; margin-bottom: 16px; }
+.why-item h3 { font-weight: 500; font-size: 20px; color: var(--color-navy); margin-bottom: 0; }
+.why-item p { font-size: 16px; color: var(--color-black); }
+
+/* ---- FAQ (shared across pages) ---- */
+.faq-section { padding: 60px 0; display: flex; flex-direction: column; align-items: center; gap: 32px; }
+.faq-list { display: flex; flex-direction: column; gap: 16px; width: 100%; }
+
+.faq-item {
+  background: var(--color-gray-bg);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.faq-question {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 24px;
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--color-navy);
+  text-align: left;
+}
+
+.faq-question .icon {
+  width: 16px; height: 8px;
+  flex-shrink: 0;
+  transition: transform .25s ease;
+  background: url('../images/chevron.svg') center / contain no-repeat;
+}
+
+.faq-item.is-open .faq-question .icon { transform: rotate(180deg); }
+
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .3s ease, padding .3s ease;
+  padding: 0 24px;
+}
+
+.faq-item.is-open .faq-answer {
+  max-height: 400px;
+  padding: 0 24px 16px;
+}
+
+.faq-answer p { font-size: 16px; color: var(--color-black); line-height: 24px; }
+
+/* ---- Utility ---- */
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 1024px) {
+  .container { padding: 0 24px; }
+  .content-1440 { padding: 0 24px; }
+
+  .cta-banner { padding: 32px 0; }
+  .cta-inner { justify-content: center; text-align: center; }
+  .cta-content { justify-content: center; }
+
+  .nav-toggle { display: block; }
+
+  .site-nav {
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--color-navy);
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    padding: 24px;
+    gap: 24px;
+    transform: translateX(100%);
+    opacity: 0;
+    visibility: hidden;
+    transition: transform .3s ease, opacity .3s ease, visibility .3s ease;
+    overflow-y: auto;
+  }
+
+  .site-nav.is-open {
+    transform: translateX(0);
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .nav-list {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .nav-home-mobile { display: list-item; }
+
+  .nav-list a {
+    width: 100%;
+    justify-content: flex-start;
+    height: auto;
+    padding: 16px 8px;
+    font-size: 18px;
+    border-bottom: 1px solid rgba(255,255,255,.1);
+  }
+
+  .site-nav .btn { width: 100%; margin-top: 8px; }
+
+  /* Mobile partner-logo row (ref: Figma "TZ-Index-320" Frame 360) — a single
+     horizontally-scrollable row the user swipes through, not a wrapped grid. */
+  .footer-partners {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding: 32px 24px;
+    gap: 32px;
+    scrollbar-width: none;         /* Firefox */
+    -ms-overflow-style: none;      /* old Edge/IE */
+    cursor: grab;
+    user-select: none;
+  }
+  .footer-partners.is-dragging { cursor: grabbing; }
+  .footer-partners::-webkit-scrollbar { display: none; }   /* Chrome/Safari */
+  .footer-partners img { flex-shrink: 0; }
+  .footer-copy { white-space: normal; }
+}
+
+/* Below 920px, "為什麼選擇 TZ" switches from the 5-column grid to a stacked
+   list — each row has the icon on the left and left-aligned text on the
+   right, inside one card. The section heading also becomes left-aligned. */
+@media (max-width: 920px) {
+  .why-section .section-title-wrap { align-items: flex-start; }
+  .why-section .section-title { text-align: left; }
+  .why-section .section-title-bar { align-self: center; }
+
+  .why-grid { flex-direction: column; gap: 32px; align-items: stretch; }
+  .why-item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 24px;
+    row-gap: 4px;
+    text-align: left;
+    flex: 1 1 auto;
+  }
+  .why-item img { grid-row: 1 / 3; grid-column: 1; width: 64px; height: 64px; flex-shrink: 0; }
+  .why-item h3 { grid-row: 1; grid-column: 2; margin-bottom: 0; }
+  .why-item p { grid-row: 2; grid-column: 2; }
+}
+
+@media (max-width: 640px) {
+  /* Mobile hero layout (ref: Figma "TZ-Index-320" Frame 513) — switches from
+     left-aligned/vertically-centred to centred/bottom-anchored, still scaling
+     fluidly with viewport width down to the 320px reference.
+
+     Height uses aspect-ratio (locked to the real 640×1120 portrait art)
+     instead of a clamp(), which only matched that ratio exactly at 320px —
+     at every other common phone width (375–430px) the box was wider than
+     640:1120, so background-size:cover cropped the sides of the image to
+     fill it. aspect-ratio keeps the box's proportions identical to the
+     source image at every width, so the whole banner always shows. */
+  .hero-slide {
+    aspect-ratio: 640 / 1120;
+    height: auto;
+  }
+  .hero-slide-bg-img.is-desktop { display: none; }
+  .hero-slide-bg-img.is-mobile { display: block; }
+  .hero-slide-content {
+    padding: 40px 16px;
+    justify-content: center;   /* content centres horizontally instead of sitting at a left inset */
+    align-items: flex-end;     /* content pins to the bottom of the slide */
+  }
+  .hero-slide h1 { font-size: 32px; line-height: 38px; white-space: normal; }
+
+  .cta-text { font-size: 22px; line-height: 30px; }
+  .cta-media { width: 140px; height: 134px; }
+
+  /* Mobile footer (ref: Figma "TZ-Index-320" Frame 356/478) — nav links stack
+     into a single centred column, and the logo/copyright/social row below
+     also stacks centred, instead of desktop's side-by-side layout. */
+  .footer-nav-list { flex-direction: column; }
+  .footer-bottom { flex-direction: column; align-items: center; text-align: center; padding-bottom: 40px; }
+  .footer-brand { flex-direction: column; align-items: center; gap: 12px; }
+}
+
+@media (max-width: 480px) {
+  :root { --header-height: 72px; }
+  .site-logo img { height: 48px; }
+  .section-title { font-size: 32px; line-height: 38px; }
+  .btn { font-size: 16px; }
+}

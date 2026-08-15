@@ -1,0 +1,94 @@
+/* ==========================================================================
+   Activity page (優惠活動) — ref: Figma "TZ-Activity-1440" / "TZ-Activity-320"
+   ========================================================================== */
+
+.activity-section { padding: 40px 0 80px; }
+
+.activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.activity-card {
+  background: var(--color-gray-bg);
+  border: 2px solid transparent;
+  border-radius: var(--radius);
+  padding: 22px;   /* 2px less than the base 24px so the box size doesn't jump when it opens (offsets the 2px border) — equal on all sides per client request */
+  transition: border-color .25s ease;
+}
+.activity-card.is-open { border-color: var(--color-brand); }
+.activity-card:not(.is-open):hover { border-color: var(--color-brand); }   /* ref: Figma "Frame 481"/"Frame 369" Variant4 — hover preview before opening */
+
+.activity-banner {
+  width: 100%;
+  aspect-ratio: 1920 / 610;
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.activity-banner img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* Collapsible T&Cs — collapsed by default, expands on toggle (ref: Figma's
+   h-px + overflow-clip default state, revealed by the "活動詳情" button) */
+.activity-details {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .35s ease;
+}
+.activity-card.is-open .activity-details { max-height: 900px; }
+
+.activity-detail-block { padding: 24px 24px 0; }
+.activity-detail-block h3 { font-weight: 500; font-size: 16px; line-height: 24px; color: var(--color-navy); margin-bottom: 8px; }
+.activity-detail-block ol { list-style: decimal; padding-left: 18px; }
+.activity-detail-block ol li { font-size: 12px; line-height: 18px; color: var(--color-black); }
+.activity-vip-rates { font-size: 12px; line-height: 18px; color: var(--color-black); white-space: pre-line; }
+
+/* Open state (ref: Figma "Frame 369" Property1=Variant2) — title and body
+   text both step up a size for readability once the card is expanded. */
+.activity-card.is-open .activity-detail-block h3 { font-size: 20px; }
+.activity-card.is-open .activity-detail-block ol { padding-left: 24px; }
+.activity-card.is-open .activity-detail-block ol li { font-size: 16px; line-height: 24px; }
+.activity-card.is-open .activity-vip-rates { font-size: 16px; line-height: 24px; }
+
+.activity-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 16px 0;
+}
+.activity-time { display: flex; align-items: center; gap: 8px; color: var(--color-navy); font-size: 20px; font-weight: 700; }
+.activity-time strong { font-weight: 700; }
+.activity-time span { font-family: Inter, var(--font-base); font-weight: 700; }
+
+.activity-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 45px;
+  width: 160px;
+  border-radius: var(--radius);
+  background: var(--color-brand);
+  color: var(--color-white);
+  font-size: 16px;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background .25s ease;
+}
+.activity-toggle:hover { background: var(--color-brand-dark); }
+.activity-card.is-open .activity-toggle { background: var(--color-navy); }
+.activity-toggle .icon {
+  width: 16px; height: 8px;
+  background: url('../images/chevron-white.svg') center / contain no-repeat;
+  transition: transform .25s ease;
+}
+.activity-card.is-open .activity-toggle .icon { transform: rotate(180deg); }
+
+@media (max-width: 640px) {
+  .activity-card { padding: 14px 6px; }   /* 2px less than Figma's 16/8 to offset the 2px border, same trick as desktop */
+  .activity-card.is-open .activity-detail-block { padding-left: 16px; padding-right: 16px; }
+  .activity-footer { flex-direction: column; align-items: center; padding-top: 16px; }
+  .activity-time { flex-direction: column; gap: 4px; text-align: center; font-size: 16px; height: 56px; justify-content: center; }
+  .activity-time strong { font-weight: 800; font-size: 20px; }
+  .activity-time span { font-size: 16px; }
+}

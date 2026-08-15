@@ -1,0 +1,184 @@
+/* ============================================
+   TZ Gaming - Homepage Styles
+   ============================================ */
+
+/* ---- Stats ---- */
+.stats-section { padding: 40px 0; }
+
+.stats-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  background: var(--color-gray-bg);
+  border-radius: var(--radius);
+  padding: 32px 96px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.stat-label { font-weight: 500; font-size: 20px; color: var(--color-black); }
+.stat-value { font-weight: 700; font-size: 48px; color: var(--color-brand); font-family: var(--font-display), var(--font-base); }
+.stat-desc { font-size: 16px; color: var(--color-black); }
+
+.stat-divider { width: 1px; height: 128px; background: var(--color-navy); flex-shrink: 0; }
+
+/* ---- Game Categories Coverflow (ref: Figma Frame 475 / 8356:1671) ----
+   Track-sliding carousel: cards default to 240×399, gap 56px. The centre
+   card grows to 280×465 and crossfades to its colour artwork. The row
+   fills the page's 1440px container (minus the 56px side insets) and
+   scales with the viewport — how many cards are visible just depends on
+   how much of that width is available. Height is a hard constant (the
+   active card's height) so the section never jitters, and the loop-reset
+   is instant (see main.js) so the wrap point is invisible.
+------------------------------------------------------------------ */
+.games-section { padding: 40px 0 80px; overflow: hidden; }
+
+.coverflow-wrap {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 56px;      /* 1440 total, 56px inset each side → 1328px usable */
+  box-sizing: border-box;
+}
+
+.coverflow {
+  position: relative;      /* establishes the offsetParent for .coverflow-track, matching the confirmed demo's #viewport — required so the translateX math in main.js lines up correctly */
+  width: 100%;      /* fills the 1328px usable area, scales down with the viewport on smaller screens */
+  height: 465px;     /* hard constant, matches the active card's height — never recalculated, so the section can't jump */
+  overflow: hidden;
+}
+
+.coverflow-track {
+  display: flex;
+  align-items: flex-end;
+  gap: 56px;
+  transition: transform .6s ease;
+  will-change: transform;
+}
+
+.coverflow-card {
+  position: relative;
+  flex-shrink: 0;
+  width: 240px;
+  height: 399px;      /* fixed — object-fit crops the art, so the box never derives size from the image */
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: width .6s ease,
+              height .6s ease;
+}
+
+.coverflow-card img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.coverflow-card.is-active {
+  width: 280px;
+  height: 465px;
+}
+
+
+/* ---- About / Promo ---- */
+.about-section {
+  background: var(--color-brand);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 64px;
+  padding: 48px 56px;
+  flex-wrap: wrap;
+}
+
+.about-media { width: 520px; max-width: 100%; aspect-ratio: 1040 / 780; flex-shrink: 0; }
+.about-media img { width: 100%; height: 100%; object-fit: cover; }
+
+.about-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 32px;
+  max-width: 537px;
+  color: var(--color-white);
+}
+
+.about-heading { display: flex; flex-direction: column; gap: 24px; }
+.about-heading h2 { font-family: var(--font-hero); font-weight: 700; font-size: 32px; line-height: 38px; }
+.about-heading .bar { width: 80px; height: 4px; border-radius: 16px; background: var(--color-white); }
+.about-content p { font-size: 16px; line-height: 24px; }
+
+/* ---- Steps ---- */
+.steps-section { padding: 48px 0; display: flex; flex-direction: column; align-items: center; gap: 32px; }
+.steps-list { display: flex; flex-direction: column; gap: 16px; width: 100%; }
+
+.step-card {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  background: var(--color-gray-bg);
+  border-radius: var(--radius);
+  padding: 24px 180px;
+  min-height: 136px;
+  transition: background .3s ease;
+}
+
+/* Hover state (ref: Figma "Frame 57" Property 1=Variant2) — card turns
+   brand blue and every piece of text/the divider turns white. */
+.step-card:hover { background: var(--color-brand); }
+.step-card:hover .step-num,
+.step-card:hover .step-text h3,
+.step-card:hover .step-text p { color: var(--color-white); }
+.step-card:hover .step-divider { background: var(--color-white); }
+
+.step-num {
+  font-family: var(--font-display), var(--font-base);
+  font-size: 64px;
+  color: var(--color-navy);
+  width: 82px;
+  text-align: right;
+  flex-shrink: 0;
+  transition: color .3s ease;
+}
+
+.step-divider { width: 1px; align-self: stretch; background: var(--color-black); flex-shrink: 0; transition: background .3s ease; }
+
+.step-text h3 { font-weight: 500; font-size: 20px; color: var(--color-navy); margin-bottom: 16px; transition: color .3s ease; }
+.step-text p { font-size: 16px; color: var(--color-black); transition: color .3s ease; }
+
+/* ---- Responsive ---- */
+@media (max-width: 1024px) {
+  .stats-card { padding: 24px; flex-wrap: wrap; justify-content: center; }
+  .stat-divider { display: none; }
+  .stat { align-items: center; text-align: center; width: 100%; }
+
+  .about-section { padding: 40px 24px; justify-content: center; }
+  .about-content { align-items: center; text-align: center; }
+  .about-heading { align-items: center; }
+
+  .step-card { padding: 20px 24px; }
+  .step-num { font-size: 40px; width: 56px; }
+
+  /* coverflow card size is intentionally constant across breakpoints — see js/main.js */
+}
+
+@media (max-width: 640px) {
+  .stat-value { font-size: 32px; }
+
+  /* Mobile step-card layout (ref: Figma "TZ-Index-320" step card) — number
+     centred on top, full-width horizontal divider, then centred text below,
+     instead of desktop's left-to-right row. */
+  .step-card { flex-direction: column; align-items: center; gap: 16px; padding: 40px 32px; text-align: center; }
+  .step-divider { width: 100%; height: 1px; align-self: auto; }
+  .step-num { text-align: center; width: 100%; height: 56px; font-size: 64px; display: flex; align-items: center; justify-content: center; }
+  .step-text { width: 100%; }
+
+  /* coverflow card size is intentionally constant across breakpoints — see js/main.js */
+}

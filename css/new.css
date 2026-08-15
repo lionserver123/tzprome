@@ -1,0 +1,185 @@
+/* ==========================================================================
+   New / Tutorial page (新手教學) — ref: Figma "TZ-New-1440" / "TZ-New-320"
+   ========================================================================== */
+
+.step-tabs-section { padding: 40px 0 80px; }
+
+.step-tabs-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+}
+
+/* ---- Tab bar (ref: Figma node 8286:1551, "Frame 556") ---- */
+.step-tabs-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  background: var(--color-gray-bg);
+  border-radius: var(--radius);
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+.step-tab {
+  flex: 1;
+  padding: 8px 32px;
+  border-radius: var(--radius);
+  background: var(--color-white);
+  color: var(--color-black);
+  font-size: 16px;
+  text-align: center;
+  transition: background .25s ease, color .25s ease;
+}
+.step-tab.is-active { background: var(--color-brand); color: var(--color-white); }
+
+.step-tab-arrow {
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  background: url('../images/chevron.svg') center / 16px 8px no-repeat;
+  transform: rotate(-90deg);   /* points right for the horizontal desktop tab bar */
+}
+
+/* ---- Panel row: circular prev/next buttons flank the sliding panel,
+   inside the same gray card (ref: Figma node 8286:1551) — the card spans
+   the tab bar's full width, with the buttons sitting inside its padding
+   rather than outside it. ---- */
+.step-panels-row {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  width: 100%;
+  background: var(--color-gray-bg);
+  border-radius: var(--radius);
+  padding: 56px;
+  box-sizing: border-box;
+}
+
+.step-nav-circle {
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--color-brand);
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: background .2s ease;
+}
+.step-nav-circle:hover { background: var(--color-brand-dark, #5a7bc4); }
+.step-nav-circle::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('../images/chevron-white.svg') center / 16px 8px no-repeat;
+}
+.step-nav-prev::after { transform: rotate(90deg); }
+.step-nav-next::after { transform: rotate(-90deg); }
+
+/* ---- Panels ---- */
+.step-panels { flex: 1; min-width: 0; }
+
+.step-panel {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  box-sizing: border-box;
+}
+.step-panel.is-active { display: flex; }
+
+.step-panel-img { flex: 1; min-width: 0; aspect-ratio: 440 / 365.78; }
+.step-panel-img img { width: 100%; height: 100%; object-fit: contain; }   /* the step illustrations are square, transparent-bg PNGs, not landscape photos — contain (not cover) keeps them fully visible instead of cropped, and the transparent edges blend seamlessly into the card's own gray background */
+
+.step-panel-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 80px;
+  max-width: 600px;
+}
+
+.step-panel-text { width: 100%; display: flex; flex-direction: column; gap: 16px; }
+.step-panel-eyebrow { font-family: Inter, var(--font-base); font-weight: 900; font-size: 48px; color: var(--color-navy); }
+.step-panel-title { font-weight: 800; font-size: 32px; color: var(--color-navy); }
+.step-panel-body h3 { font-weight: 700; font-size: 20px; color: var(--color-navy); margin-bottom: 4px; }
+.step-panel-body p { font-size: 16px; color: var(--color-black); }
+
+.step-progress { display: flex; align-items: center; gap: 8px; width: 100%; }
+.step-progress span { flex: 1; height: 8px; border-radius: 60px; background: #A8A8A8; }
+.step-progress span.is-active { background: var(--color-brand); }
+
+/* Mobile-only connector between stacked cards, and the "完成註冊" label
+   that replaces it after the last card — both hidden on desktop, where
+   the circular side buttons handle navigation instead. */
+.step-mobile-next,
+.step-mobile-finish { display: none; }
+
+@media (max-width: 768px) {
+  /* Mobile redesign (ref: Figma node 8367:2381) — all four steps are shown
+     at once as a static stacked list (no tab-switching interaction at
+     all): each step is its own full card, connected by a down-arrow
+     badge, ending in a "完成註冊" label instead of an arrow after the
+     last card. The desktop tab bar and circular prev/next buttons are
+     both irrelevant here and hidden. */
+  .step-tabs-nav,
+  .step-nav-circle { display: none; }
+
+  .step-panels-row { gap: 0; background: none; padding: 0; border-radius: 0; }
+  .step-panels { display: flex; flex-direction: column; gap: 24px; width: 100%; }
+
+  .step-panel {
+    display: flex !important;   /* every step shows, not just .is-active */
+    flex-direction: column;
+    gap: 32px;
+    padding: 32px 24px;
+    background: var(--color-gray-bg);   /* each step is its own card again on mobile */
+    border-radius: var(--radius);
+  }
+  .step-panel-img { width: 100%; aspect-ratio: 332 / 276; }
+  .step-panel-content { gap: 40px; }
+
+  /* Animated triple-chevron connector (ref: Figma node 8628:6704) — three
+     stacked chevrons where a "bright" highlight travels downward through
+     them on a loop, hinting at scrolling to the next step. Recreated as a
+     staggered CSS opacity pulse rather than a frame-by-frame Figma
+     animation, since that's not something a static SVG export can carry
+     over anyway. */
+  .step-mobile-next {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    width: 48px;
+    margin: 0 auto;
+  }
+  .step-mobile-next span {
+    display: block;
+    width: 48px;
+    height: 16px;
+    background: url('../images/chevron-brand.svg') center / contain no-repeat;
+    opacity: 0.25;
+    animation: stepChevronPulse 1.4s ease-in-out infinite;
+  }
+  .step-mobile-next span:nth-child(1) { animation-delay: 0s; }
+  .step-mobile-next span:nth-child(2) { animation-delay: .2s; }
+  .step-mobile-next span:nth-child(3) { animation-delay: .4s; }
+
+  @keyframes stepChevronPulse {
+    0%, 100% { opacity: .25; }
+    50% { opacity: 1; }
+  }
+  .step-mobile-finish {
+    display: block;
+    font-family: var(--font-base);
+    font-weight: 800;
+    font-size: 32px;
+    color: var(--color-brand);
+    text-align: center;
+  }
+}

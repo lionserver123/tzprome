@@ -1,0 +1,49 @@
+/* ============================================
+   TZ Gaming - About / Privacy shared styles
+   Both pages reuse the same "title + underline
+   bar + body copy" content block, just with
+   different text, so one stylesheet covers both.
+   ============================================ */
+
+/* Reuse .hero-slide's box/background handling for a single static banner
+   (no carousel/dots/text overlay needed here — ref Figma "Frame 410"). */
+.about-hero { position: relative; height: clamp(320px, 32.22vw, 464px); overflow: hidden; }
+
+.about-hero-dash {
+  display: flex;
+  justify-content: center;
+  padding: 24px 0;
+}
+.about-hero-dash span { width: 48px; height: 12px; border-radius: 40px; background: var(--color-brand); }
+
+.info-section { padding: 48px 56px; }
+.info-section:last-of-type { padding-bottom: 60px; }
+
+.info-inner {
+  max-width: 1088px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.info-title { font-family: var(--font-hero); font-weight: 700; font-size: 32px; line-height: 38px; color: var(--color-navy); text-align: center; }
+.info-bar { width: 80px; height: 4px; border-radius: 16px; background: var(--color-navy); }
+
+.info-body { width: 100%; font-size: 16px; line-height: 24px; color: var(--color-black); }
+.info-body p { margin-bottom: 16px; }
+.info-body p:last-child { margin-bottom: 0; }
+.info-body h3 { font-weight: 500; font-size: 20px; color: var(--color-navy); margin: 24px 0 8px; }
+.info-body ul { margin: 0 0 16px; padding-left: 24px; list-style: disc; }
+.info-body li { margin-bottom: 8px; }
+.info-body li:last-child { margin-bottom: 0; }
+
+@media (max-width: 1024px) {
+  .info-section { padding: 24px 24px 40px; }
+  .info-inner { gap: 32px; }
+}
+
+@media (max-width: 640px) {
+  .info-section { padding: 24px 16px 40px; }
+}

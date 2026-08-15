@@ -1,0 +1,138 @@
+/* ==========================================================================
+   Sport page (體育賽事) — ref: Figma "TZ-Sport-1440" / "TZ-Sport-320"
+   ========================================================================== */
+
+/* ---- Feature strip (no heading, ref: Frame 423) — reuses .why-grid/.why-item ---- */
+.sport-features-section { padding: 40px 0; }
+
+/* ---- Hot events (ref: Frame 409) — stacked banner images ---- */
+.sport-section { padding: 40px 0; }
+.sport-hot-events {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+.sport-hot-events img {
+  width: 100%;
+  aspect-ratio: 1328 / 295;
+  border-radius: var(--radius);
+  border: 2px solid #748ED5;
+  object-fit: cover;
+  display: block;
+}
+
+/* ---- Multi bet types (ref: Frame 417-422) ---- */
+.sport-bet-list { display: flex; flex-direction: column; gap: 16px; }
+
+.sport-bet-row {
+  background: var(--color-gray-bg);
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 96px;
+  min-height: 136px;
+  transition: background .3s ease;
+}
+
+/* Text group hugs the left, button hugs the right, both capped to a
+   1000px-wide zone centred in the row (ref: Frame 417). */
+.sport-bet-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1000px;
+  gap: 24px;
+}
+
+.sport-bet-main { display: flex; align-items: center; gap: 32px; }
+.sport-bet-label {
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 38px;
+  color: var(--color-navy);
+  white-space: nowrap;
+  transition: color .3s ease;
+}
+.sport-bet-divider { width: 1px; align-self: stretch; background: var(--color-black); flex-shrink: 0; transition: background .3s ease; }
+.sport-bet-text { text-align: left; max-width: 400px; }
+.sport-bet-text h3 { font-weight: 500; font-size: 20px; color: var(--color-navy); margin-bottom: 8px; transition: color .3s ease; }
+.sport-bet-text p { font-size: 16px; color: var(--color-black); transition: color .3s ease; }
+
+/* Hover state (ref: Figma "Frame 417" Property1=Variant2) — the whole row
+   turns brand blue and all text turns white; the button itself is unchanged. */
+.sport-bet-row:hover { background: var(--color-brand); }
+.sport-bet-row:hover .sport-bet-label,
+.sport-bet-row:hover .sport-bet-text h3,
+.sport-bet-row:hover .sport-bet-text p { color: var(--color-white); }
+.sport-bet-row:hover .sport-bet-divider { background: var(--color-white); }
+
+/* ---- Classic events (ref: Frame 455) — horizontal scroll row ---- */
+.sport-classic-scroll {
+  display: flex;
+  gap: 32px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  cursor: grab;
+  user-select: none;
+}
+.sport-classic-scroll.is-dragging { cursor: grabbing; }
+.sport-classic-scroll::-webkit-scrollbar { display: none; }
+
+.sport-classic-card {
+  background: var(--color-gray-bg);
+  border-radius: var(--radius);
+  flex-shrink: 0;
+  width: 272px;
+  height: 344px;
+  padding: 32px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  text-align: center;
+}
+.sport-classic-card img { flex: 1; min-height: 0; max-width: 100%; object-fit: contain; }
+.sport-classic-card .en { font-family: Inter, var(--font-base); font-weight: 900; font-size: 20px; color: var(--color-navy); line-height: 34px; }
+.sport-classic-card .zh { font-weight: 700; font-size: 20px; color: var(--color-navy); line-height: 34px; }
+.sport-classic-card p { font-size: 16px; color: var(--color-black); }
+
+/* ---- Ticker marquee (ref: standalone icon strip) ---- */
+.sport-ticker {
+  overflow: hidden;
+  padding: 24px 0;
+}
+.sport-ticker-track {
+  display: flex;
+  align-items: center;
+  gap: 60px;
+  width: max-content;
+  animation: sport-ticker-scroll 30s linear infinite;
+}
+.sport-ticker-track img { width: 80px; height: 80px; flex-shrink: 0; }
+@keyframes sport-ticker-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-33.3333%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sport-ticker-track { animation: none; }
+}
+
+/* Below 1024px, hot-event banners switch to the mobile-specific square
+   crop, and "多元下注" switches from the horizontal row to a stacked
+   vertical card (ref: Figma UI "Frame 417"). */
+@media (max-width: 1024px) {
+  .sport-hot-events img { aspect-ratio: 400 / 300; }
+
+  .sport-bet-row { padding: 32px; }
+  .sport-bet-inner { flex-direction: column; gap: 24px; max-width: none; }
+  .sport-bet-main { flex-direction: column; width: 100%; gap: 16px; }
+  .sport-bet-label { text-align: center; }
+  .sport-bet-divider { width: 56px; height: 1px; align-self: center; }
+  .sport-bet-text { text-align: center; max-width: none; }
+}
