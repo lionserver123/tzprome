@@ -62,6 +62,7 @@ body { background: #0E1629; }
 .slot-preview {
   position: relative;
   width: 100%;
+  max-width: 1200px;
   margin: 0 auto;
   aspect-ratio: 1080 / 586;
   border-radius: var(--radius);
@@ -70,8 +71,18 @@ body { background: #0E1629; }
 .slot-preview-track { display: flex; height: 100%; transition: transform .6s cubic-bezier(.65,0,.35,1); }
 .slot-preview-track > div { flex: 0 0 100%; min-width: 100%; height: 100%; }
 .slot-preview-track img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.slot-preview-dots { display: flex; align-items: center; justify-content: center; gap: 24px; padding-top: 40px; }
-.slot-preview-dots button { width: 12px; height: 12px; border-radius: 50%; background: var(--color-gray-light); transition: background .3s ease; }
+.slot-preview-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  width: fit-content;
+  margin: 40px auto 0;
+  padding: 10px 24px;
+  background: rgba(255, 255, 255, 0.1);   /* 底色 10% 白 */
+  border-radius: 999px;                    /* 長型倒圓角（膠囊狀） */
+}
+.slot-preview-dots button { width: 16px; height: 16px; border-radius: 50%; background: var(--color-navy); transition: background .3s ease; }
 .slot-preview-dots button.is-active { background: var(--color-brand); }
 
 @media (max-width: 1024px) {
@@ -85,5 +96,5 @@ body { background: #0E1629; }
 
 @media (max-width: 640px) {
   .slot-showcase-section { padding: 40px 0 60px; }
-  .slot-preview-dots { padding-top: 24px; }
+  .slot-preview-dots { margin-top: 24px; }
 }

@@ -720,7 +720,7 @@ section {
     justify-content: center;   /* content centres horizontally instead of sitting at a left inset */
     align-items: flex-end;     /* content pins to the bottom of the slide */
   }
-  .hero-slide h1 { font-size: 32px; line-height: 38px; white-space: normal; }
+  .hero-slide h1 { font-size: 48px; line-height: 56px; white-space: normal; }
 
   .cta-text { font-size: 22px; line-height: 30px; }
   .cta-media { width: 140px; height: 134px; }
